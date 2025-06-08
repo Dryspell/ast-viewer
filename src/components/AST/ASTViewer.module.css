@@ -1,0 +1,97 @@
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.editor {
+  flex: 1;
+  padding: 1rem;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer {
+  flex: 1;
+  padding: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.monacoEditor {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.codeInput {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+}
+
+.tree {
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+}
+
+.node {
+  margin: 4px 0;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  transition: background-color 0.2s;
+}
+
+.node:hover {
+  background-color: #e0e0e0;
+}
+
+.nodeHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nodeType {
+  font-weight: bold;
+  color: #2196f3;
+}
+
+.nodeInfo {
+  color: #666;
+  font-size: 12px;
+}
+
+.childNode {
+  margin-left: 16px;
+}
+
+.error {
+  color: #f44336;
+  padding: 1rem;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.placeholder {
+  color: #666;
+  text-align: center;
+  padding: 2rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+} 

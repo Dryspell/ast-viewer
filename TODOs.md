@@ -3,6 +3,7 @@
 ## Core Functionality
 
 ### AST Parsing and Visualization
+
 - [ ] Set up TypeScript parser integration
 - [ ] Create basic AST node visualization components
 - [ ] Implement tree view for AST structure
@@ -11,6 +12,7 @@
 - [ ] Add node search and filtering
 
 ### Code Editor Integration
+
 - [ ] Integrate Monaco Editor
 - [ ] Implement syntax highlighting
 - [ ] Add real-time code preview
@@ -18,6 +20,7 @@
 - [ ] Add error handling and validation
 
 ### AST Manipulation
+
 - [ ] Implement node selection
 - [ ] Add drag-and-drop node reordering
 - [ ] Create node editing interface
@@ -26,6 +29,7 @@
 - [ ] Implement undo/redo functionality
 
 ### Export/Import
+
 - [ ] Add AST structure export (JSON)
 - [ ] Implement AST import functionality
 - [ ] Add code export from modified AST
@@ -34,18 +38,21 @@
 ## UI/UX
 
 ### Layout
+
 - [ ] Design responsive layout
 - [ ] Create split view (code/visualization)
 - [ ] Add customizable panels
 - [ ] Implement dark/light theme
 
 ### Navigation
+
 - [ ] Add breadcrumb navigation
 - [ ] Implement zoom controls
 - [ ] Add minimap for large ASTs
 - [ ] Create keyboard shortcuts
 
 ### User Experience
+
 - [ ] Add tooltips and help text
 - [ ] Create guided tour
 - [ ] Implement progress indicators
@@ -80,4 +87,4 @@
 - [ ] Add plugin system
 - [ ] Create custom transformation templates
 - [ ] Add collaborative features
-- [ ] Implement version control integration 
+- [ ] Implement version control integration
