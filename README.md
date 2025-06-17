@@ -2,34 +2,57 @@
 
 A visual tool for viewing and manipulating TypeScript Abstract Syntax Trees (ASTs). This project allows developers to interact with TypeScript code through an intuitive visual interface, making it easier to understand and modify code structures.
 
-## Features (Planned)
+## Features
 
-- Visual representation of TypeScript AST nodes
-- Interactive node manipulation
-- Real-time code generation from AST modifications
-- Syntax highlighting and code preview
-- Export/Import AST structures
-- Support for common TypeScript transformations
+- 🌳 Visual representation of TypeScript AST nodes using an interactive flow diagram
+- 🖥️ Monaco Editor integration for code editing
+- 🔄 Real-time AST updates as you type
+- 🎨 Modern, responsive UI built with SolidJS
+- 🔍 Detailed node inspection and navigation
+- 📝 TypeScript parsing using @typescript-eslint/parser
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js >= 22
+- pnpm (recommended package manager)
+
+### Installation
+
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Start development server
-npm run dev
+pnpm dev
 
 # Build for production
-npm run build
+pnpm build
 ```
 
 ## Technology Stack
 
-- [SolidJS](https://www.solidjs.com/) - Frontend framework
-- [TypeScript](https://www.typescriptlang.org/) - Language support
-- [@typescript-eslint/parser](https://github.com/typescript-eslint/typescript-eslint) - AST parsing
-- [Monaco Editor](https://microsoft.github.io/monaco-editor/) - Code editing
+- [SolidJS](https://www.solidjs.com/) - A performant and efficient reactive JavaScript library
+- [Vinxi](https://vinxi.vercel.app/) - The full stack web framework
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/) - Powerful code editor with TypeScript support
+- [@typescript-eslint/parser](https://github.com/typescript-eslint/typescript-eslint) - TypeScript AST parsing
+- [@xyflow/solidjs](https://github.com/nobie-org/xyflow) - Flow diagram visualization (SolidJS port)
+- [@solidjs/router](https://github.com/solidjs/solid-router) - Routing solution for SolidJS
+
+## Development
+
+The project uses a modern development setup:
+
+- 📦 pnpm workspaces for package management
+- 🛠️ Rollup for building the xyflow integration
+- 🎯 TypeScript for type safety
+- 🚀 Fast refresh during development
+
+To build the xyflow integration separately:
+```bash
+pnpm build:xyflow
+```
 
 ## Contributing
 

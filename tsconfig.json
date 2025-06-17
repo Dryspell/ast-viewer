@@ -12,8 +12,14 @@
     "noEmit": true,
     "types": ["vinxi/types/client"],
     "isolatedModules": true,
+    "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "@xyflow/solidjs": ["./node_modules/@xyflow/monorepo/packages/solidjs"]
     }
-  }
+  },
+  "include": [
+    "src/**/*",
+    "node_modules/@xyflow/monorepo/packages/solidjs/**/*"
+  ]
 }
