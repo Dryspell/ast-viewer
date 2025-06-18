@@ -37,3 +37,47 @@ p {
     max-width: none;
   }
 }
+
+/* Add base styles for the app container */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#root > div {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Add your global styles here */
+
+.ProseMirror {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #fff;
+  background-color: #1e1e1e;
+  padding: 1rem;
+  min-height: 400px;
+  outline: none;
+  white-space: pre-wrap;
+}
+
+.ProseMirror p {
+  margin: 0;
+  padding: 0;
+}
+
+.ProseMirror * {
+  margin: 0;
+  padding: 0;
+}
+
+/* Hide any unnecessary formatting UI */
+.tiptap-menu {
+  display: none;
+}

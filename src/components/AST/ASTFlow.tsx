@@ -11,7 +11,6 @@ import {
 	BuiltInNode,
 	ReactFlowProvider,
 	Panel,
-	useReactFlow,
 } from "../../lib/xyflow/index";
 
 interface ASTFlowProps {
@@ -55,10 +54,9 @@ const nodeTypes: NodeTypes = {
 	),
 };
 
-const ASTFlow: Component<ASTFlowProps> = (props) => {
+const FlowContent: Component<ASTFlowProps> = (props) => {
 	const [nodes, setNodes] = createSignal<Node<ASTNodeData>[]>([]);
 	const [edges, setEdges] = createSignal<Edge[]>([]);
-	const { fitView, zoomTo } = useReactFlow();
 
 	const layoutNodes = (nodes: Node<ASTNodeData>[]): Node<ASTNodeData>[] => {
 		const levelMap = new Map<string, number>();
@@ -164,56 +162,42 @@ const ASTFlow: Component<ASTFlowProps> = (props) => {
 			);
 			setNodes(layoutNodes(newNodes));
 			setEdges(newEdges);
-			setTimeout(() => {
-				fitView({ padding: 0.2 });
-			}, 100);
 		}
 	});
 
 	return (
+		<ReactFlow
+			nodes={nodes()}
+			edges={edges()}
+			nodeTypes={nodeTypes}
+			onNodeClick={handleNodeClick}
+			fitView
+			defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+		>
+			<Background variant={BackgroundVariant.Dots} />
+			<Controls />
+			<MiniMap />
+			<Panel position="top-left">
+				<div
+					style={{
+						background: "white",
+						padding: "10px",
+						"border-radius": "5px",
+						"box-shadow": "0 0 10px rgba(0,0,0,0.1)",
+					}}
+				>
+					<button style={{ margin: "0 5px" }}>Zoom to Fit</button>
+				</div>
+			</Panel>
+		</ReactFlow>
+	);
+};
+
+const ASTFlow: Component<ASTFlowProps> = (props) => {
+	return (
 		<div style={{ width: "100%", height: "100%" }}>
 			<ReactFlowProvider>
-				<ReactFlow
-					nodes={nodes()}
-					edges={edges()}
-					nodeTypes={nodeTypes}
-					onNodeClick={handleNodeClick}
-					fitView
-					defaultViewport={{ x: 0, y: 0, zoom: 1 }}
-				>
-					<Background variant={BackgroundVariant.Dots} />
-					<Controls />
-					<MiniMap />
-					<Panel position="top-left">
-						<div
-							style={{
-								background: "white",
-								padding: "10px",
-								"border-radius": "5px",
-								"box-shadow": "0 0 10px rgba(0,0,0,0.1)",
-							}}
-						>
-							<button
-								onClick={() => zoomTo(0.5)}
-								style={{ margin: "0 5px" }}
-							>
-								50%
-							</button>
-							<button
-								onClick={() => zoomTo(1)}
-								style={{ margin: "0 5px" }}
-							>
-								100%
-							</button>
-							<button
-								onClick={() => zoomTo(2)}
-								style={{ margin: "0 5px" }}
-							>
-								200%
-							</button>
-						</div>
-					</Panel>
-				</ReactFlow>
+				<FlowContent {...props} />
 			</ReactFlowProvider>
 		</div>
 	);

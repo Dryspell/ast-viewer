@@ -9,26 +9,28 @@
 		"build:xyflow": "rollup -c rollup.config.mjs"
 	},
 	"dependencies": {
-		"@monaco-editor/loader": "^1.5.0",
-		"@monaco-editor/react": "^4.7.0",
 		"@solid-primitives/map": "^0.4.8",
+		"@solidjs/meta": "^0.29.4",
 		"@solidjs/router": "^0.15.0",
 		"@solidjs/start": "^1.1.0",
+		"@tiptap/core": "2.1.12",
+		"@tiptap/pm": "2.1.12",
+		"@tiptap/starter-kit": "2.1.12",
 		"@typescript-eslint/parser": "^8.33.1",
 		"@typescript-eslint/typescript-estree": "^8.33.1",
-		"@xyflow/solidjs": "github:nobie-org/xyflow#matt/feat/solid-js-port-updated",
+		"@vrite/tiptap-solid": "1.0.4",
 		"@xyflow/system": "^0.0.62",
 		"classcat": "^5.0.4",
 		"solid-js": "^1.9.5",
 		"vinxi": "^0.5.3"
 	},
 	"devDependencies": {
+		"@babel/preset-typescript": "^7.23.3",
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-typescript": "^11.1.6",
 		"rollup": "^4.9.6",
-		"rollup-plugin-postcss": "^4.0.2",
-		"@babel/preset-typescript": "^7.23.3"
+		"rollup-plugin-postcss": "^4.0.2"
 	},
 	"engines": {
 		"node": ">=22"
