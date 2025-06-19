@@ -1,17 +1,21 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  darkMode: ["variant", [".dark &", '[data-kb-theme="dark"] &']],
-  content: ["./src/**/*.{ts,tsx}"],
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: ["class", '[data-theme="dark"]'],
   prefix: "",
   theme: {
     container: {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px"
-      }
+        "2xl": "1400px",
+      },
     },
     extend: {
+      fontFamily: {
+        sans: ['Gordita', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', 'sans-serif'],
+        mono: ['Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -29,22 +33,6 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))"
-        },
-        info: {
-          DEFAULT: "hsl(var(--info))",
-          foreground: "hsl(var(--info-foreground))"
-        },
-        success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))"
-        },
-        warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))"
-        },
-        error: {
-          DEFAULT: "hsl(var(--error))",
-          foreground: "hsl(var(--error-foreground))"
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -100,5 +88,7 @@ export default {
       }
     }
   },
-  plugins: [require("tailwindcss-animate")]
+  plugins: [
+    require("tailwindcss-animate")
+  ]
 }

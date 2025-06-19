@@ -9,10 +9,14 @@ export default function App() {
 		<Router
 			root={(props) => (
 				<MetaProvider>
-					<Title>SolidStart - Basic</Title>
-					<a href="/">Index</a>
-					<a href="/about">About</a>
-					<Suspense>{props.children}</Suspense>
+					<Title>AST Explorer - Visualize Your Code Structure</Title>
+					<div class="min-h-screen bg-background font-sans antialiased">
+						<main class="relative flex flex-col min-h-screen">
+							<Suspense fallback={<div class="flex items-center justify-center min-h-screen">Loading...</div>}>
+								{props.children}
+							</Suspense>
+						</main>
+					</div>
 				</MetaProvider>
 			)}
 		>
