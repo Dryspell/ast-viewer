@@ -1,6 +1,34 @@
 import { Component, createSignal, Show } from "solid-js";
 import { parse } from "@typescript-eslint/typescript-estree";
 import ASTFlow from "./ASTFlow";
+import { Node } from "@tiptap/core";
+import { SolidEditorContent, useEditor } from "@vrite/tiptap-solid";
+
+// Create the required doc node
+const CustomDoc = Node.create({
+	name: 'doc',
+	topNode: true,
+	content: 'paragraph+',
+});
+
+// Create the required text node
+const CustomText = Node.create({
+	name: 'text',
+	group: 'inline',
+});
+
+// Create a basic paragraph node
+const CustomParagraph = Node.create({
+	name: 'paragraph',
+	group: 'block',
+	content: 'text*',
+	parseHTML() {
+		return [{ tag: 'p' }];
+	},
+	renderHTML({ HTMLAttributes }) {
+		return ['p', HTMLAttributes, 0];
+	},
+});
 
 interface ASTNode {
 	type: string;
@@ -26,6 +54,22 @@ function greet(name: string): string {
 const ASTViewer: Component = () => {
 	const [code, setCode] = createSignal(DEFAULT_CODE);
 	const [ast, setAst] = createSignal<ASTNode | null>(null);
+
+	const editor = useEditor({
+		extensions: [
+			CustomDoc,
+			CustomText,
+			CustomParagraph,
+		],
+		content: DEFAULT_CODE,
+		editable: true,
+		onUpdate: ({ editor }) => {
+			const newCode = editor.getText();
+			console.log("Editor content updated:", newCode);
+			setCode(newCode);
+			parseCode(newCode);
+		}
+	});
 
 	const parseCode = (input: string) => {
 		try {
@@ -69,39 +113,50 @@ const ASTViewer: Component = () => {
 	return (
 		<div style={{
 			display: "grid",
-			"grid-template-columns": "1fr 1fr",
+			"grid-template-columns": "1fr 1fr 1fr",
 			gap: "1rem",
 			padding: "1rem",
 			height: "100vh",
 			"background-color": "#1e1e1e",
 		}}>
+			{/* Rich Text Editor */}
 			<div style={{
 				padding: "1rem",
 				"background-color": "#2d2d2d",
 				"border-radius": "4px",
 			}}>
+				<h3 style={{ color: "white", "margin-bottom": "1rem" }}>Rich Text Editor</h3>
+				<Show when={editor()} fallback={<div style={{ color: "white" }}>Loading editor...</div>}>
+					<div style={{
+						"background-color": "#1e1e1e",
+						"border-radius": "4px",
+						padding: "1rem",
+						height: "calc(100% - 4rem)",
+					}}>
+						<SolidEditorContent editor={editor()!} />
+					</div>
+				</Show>
+			</div>
+
+			{/* Raw Code View */}
+			<div style={{
+				padding: "1rem",
+				"background-color": "#2d2d2d",
+				"border-radius": "4px",
+			}}>
+				<h3 style={{ color: "white", "margin-bottom": "1rem" }}>Raw Code</h3>
 				<textarea
 					value={code()}
 					onInput={(e) => {
 						const target = e.target as HTMLTextAreaElement;
-						console.log("onInput event fired");
-						console.log("New value:", target.value);
-						console.log("Previous value:", code());
 						setCode(target.value);
 						parseCode(target.value);
-					}}
-					onChange={(e) => {
-						const target = e.target as HTMLTextAreaElement;
-						console.log("onChange event fired");
-						console.log("New value:", target.value);
-						console.log("Previous value:", code());
-						setCode(target.value);
-						parseCode(target.value);
+						editor()?.commands.setContent(target.value);
 					}}
 					style={{
 						width: "100%",
-						height: "100%",
-						"background-color": "transparent",
+						height: "calc(100% - 4rem)",
+						"background-color": "#1e1e1e",
 						color: "white",
 						border: "none",
 						outline: "none",
@@ -109,19 +164,29 @@ const ASTViewer: Component = () => {
 						"font-size": "14px",
 						resize: "none",
 						padding: "1rem",
-						"min-height": "300px",
+						"border-radius": "4px",
 					}}
 					spellcheck={false}
 				/>
 			</div>
+
+			{/* AST View */}
 			<div style={{
 				padding: "1rem",
 				"background-color": "#2d2d2d",
 				"border-radius": "4px",
 			}}>
-				<Show when={ast()} fallback={<div>No AST available</div>}>
-					<ASTFlow ast={ast()!} onNodeSelect={() => {}} />
-				</Show>
+				<h3 style={{ color: "white", "margin-bottom": "1rem" }}>AST Visualization</h3>
+				<div style={{
+					height: "calc(100% - 4rem)",
+					"background-color": "#1e1e1e",
+					"border-radius": "4px",
+					overflow: "auto",
+				}}>
+					<Show when={ast()} fallback={<div style={{ color: "white", padding: "1rem" }}>No AST available</div>}>
+						<ASTFlow ast={ast()!} onNodeSelect={() => {}} />
+					</Show>
+				</div>
 			</div>
 		</div>
 	);
