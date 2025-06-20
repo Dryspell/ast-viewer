@@ -9,21 +9,21 @@
 		"build:xyflow": "rollup -c rollup.config.mjs"
 	},
 	"dependencies": {
+		"@kobalte/core": "^0.13.10",
 		"@solid-primitives/map": "^0.4.8",
 		"@solidjs/meta": "^0.29.4",
 		"@solidjs/router": "^0.15.0",
 		"@solidjs/start": "^1.1.0",
-		"@tiptap/core": "2.1.12",
-		"@tiptap/pm": "2.1.12",
-		"@tiptap/starter-kit": "2.1.12",
 		"@typescript-eslint/parser": "^8.33.1",
 		"@typescript-eslint/typescript-estree": "^8.33.1",
-		"@vrite/tiptap-solid": "1.0.4",
 		"@xyflow/system": "^0.0.62",
 		"class-variance-authority": "^0.7.1",
 		"classcat": "^5.0.4",
 		"clsx": "^2.1.1",
+		"lucide-solid": "^0.518.0",
+		"monaco-editor": "^0.52.2",
 		"solid-js": "^1.9.5",
+		"solid-monaco": "^0.3.0",
 		"tailwind-merge": "^3.3.1",
 		"tailwindcss-animate": "^1.0.7",
 		"vinxi": "^0.5.3"
@@ -35,6 +35,7 @@
 		"@rollup/plugin-typescript": "^11.1.6",
 		"autoprefixer": "^10.4.21",
 		"postcss": "^8.5.6",
+		"postcss-nesting": "^13.0.2",
 		"rollup": "^4.9.6",
 		"rollup-plugin-postcss": "^4.0.2",
 		"tailwindcss": "3.4.1"

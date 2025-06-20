@@ -1,5 +1,6 @@
-import { Component, lazy } from "solid-js";
+import { Component, Suspense } from "solid-js";
 import { clientOnly } from "@solidjs/start";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 const TextEditor = clientOnly(() => import("../components/TextEditor"));
 
@@ -18,7 +19,13 @@ const EditorRoute: Component = () => {
       }}>
         Text Editor Demo
       </h2>
-      <TextEditor />
+      <Suspense fallback={
+        <div class="min-h-[400px] flex items-center justify-center bg-[#1e1e1e] rounded-lg">
+          <LoadingSpinner size="lg" class="text-white/60" />
+        </div>
+      }>
+        <TextEditor />
+      </Suspense>
     </div>
   );
 };

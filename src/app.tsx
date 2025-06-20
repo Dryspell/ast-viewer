@@ -2,6 +2,7 @@ import { MetaProvider, Title } from "@solidjs/meta";
 import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
+import { Toaster } from "~/components/ui/toast";
 import "./app.css";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
 							<Suspense fallback={<div class="flex items-center justify-center min-h-screen">Loading...</div>}>
 								{props.children}
 							</Suspense>
+							<Toaster />
 						</main>
 					</div>
 				</MetaProvider>

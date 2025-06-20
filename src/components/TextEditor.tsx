@@ -1,61 +1,62 @@
 import { Component } from "solid-js";
-import { SolidEditorContent, useEditor } from "@vrite/tiptap-solid";
-import { Show } from "solid-js";
-import { Node } from "@tiptap/core";
+import { MonacoEditor } from "solid-monaco";
+import "../monaco.worker";
 
-// Create the required doc node
-const CustomDoc = Node.create({
-  name: 'doc',
-  topNode: true,
-  content: 'paragraph+',
-});
+interface TextEditorProps {
+	value?: string;
+	onChange?: (value: string) => void;
+}
 
-// Create the required text node
-const CustomText = Node.create({
-  name: 'text',
-  group: 'inline',
-});
+const TextEditor: Component<TextEditorProps> = (props) => {
+	let editor: any;
 
-// Create a basic paragraph node
-const CustomParagraph = Node.create({
-  name: 'paragraph',
-  group: 'block',
-  content: 'text*',
-  parseHTML() {
-    return [{ tag: 'p' }];
-  },
-  renderHTML({ HTMLAttributes }) {
-    return ['p', HTMLAttributes, 0];
-  },
-});
+	const handleEditorDidMount = (monaco: any, ed: any) => {
+		editor = ed;
+		monaco.editor.setTheme("vs-dark");
+		monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+			noSemanticValidation: false,
+			noSyntaxValidation: false,
+		});
+	};
 
-const TextEditor: Component = () => {
-  const editor = useEditor({
-    extensions: [
-      CustomDoc,
-      CustomText,
-      CustomParagraph,
-    ],
-    content: '<p>Hello World!</p>',
-    editable: true,
-  });
-
-  return (
-    <div style={{ padding: "20px" }}>
-      <h3>Rich Text Editor</h3>
-      <div style={{
-        "border": "1px solid #ccc",
-        "border-radius": "4px",
-        "min-height": "200px",
-        "padding": "1rem",
-        "background-color": "white"
-      }}>
-        <Show when={editor()} fallback={<div>Loading editor...</div>}>
-          <SolidEditorContent editor={editor()!} />
-        </Show>
-      </div>
-    </div>
-  );
+	return (
+		<div style={{ padding: "20px" }}>
+			<h3>Code Editor</h3>
+			<div style={{
+				height: "400px",
+				border: "1px solid #ccc",
+				"border-radius": "4px",
+				overflow: "hidden",
+			}}>
+				<MonacoEditor
+					language="typescript"
+					theme="vs-dark"
+					value={props.value}
+					onChange={props.onChange}
+					onMount={handleEditorDidMount}
+					options={{
+						minimap: { enabled: true },
+						fontSize: 14,
+						lineNumbers: "on",
+						roundedSelection: false,
+						scrollBeyondLastLine: false,
+						readOnly: false,
+						automaticLayout: true,
+						scrollbar: {
+							useShadows: false,
+							verticalScrollbarSize: 10,
+							horizontalScrollbarSize: 10,
+						},
+						overviewRulerLanes: 0,
+						hideCursorInOverviewRuler: true,
+						renderLineHighlight: "line",
+						lineHeight: 21,
+						padding: { top: 8, bottom: 8 },
+					}}
+				/>
+			</div>
+		</div>
+	);
 };
 
-export default TextEditor; 
+export default TextEditor;

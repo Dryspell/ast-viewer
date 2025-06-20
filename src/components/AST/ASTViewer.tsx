@@ -1,34 +1,15 @@
 import { Component, createSignal, Show } from "solid-js";
 import { parse } from "@typescript-eslint/typescript-estree";
 import ASTFlow from "./ASTFlow";
-import { Node } from "@tiptap/core";
-import { SolidEditorContent, useEditor } from "@vrite/tiptap-solid";
+import { clientOnly } from "@solidjs/start";
+import Tabs from "../ui/Tabs";
+import CollapsiblePanel from "../ui/CollapsiblePanel";
+import LogViewer, { type Log } from "./LogViewer";
+import LoadingSpinner from "../ui/LoadingSpinner";
+import { showToast } from "~/components/ui/toast";
 
-// Create the required doc node
-const CustomDoc = Node.create({
-	name: 'doc',
-	topNode: true,
-	content: 'paragraph+',
-});
-
-// Create the required text node
-const CustomText = Node.create({
-	name: 'text',
-	group: 'inline',
-});
-
-// Create a basic paragraph node
-const CustomParagraph = Node.create({
-	name: 'paragraph',
-	group: 'block',
-	content: 'text*',
-	parseHTML() {
-		return [{ tag: 'p' }];
-	},
-	renderHTML({ HTMLAttributes }) {
-		return ['p', HTMLAttributes, 0];
-	},
-});
+// TODO: Add support for different parsers (Flow, Babel, etc.)
+const MonacoEditorClient = clientOnly(() => import("../TextEditor"));
 
 interface ASTNode {
 	type: string;
@@ -40,10 +21,11 @@ interface ASTNode {
 	[key: string]: any;
 }
 
-interface NodeDetails {
-	type: string;
-	range: [number, number];
-	details: Record<string, unknown>;
+interface FileTab {
+	id: string;
+	title: string;
+	content: string;
+	active: boolean;
 }
 
 const DEFAULT_CODE = `// Enter your TypeScript code here
@@ -52,34 +34,33 @@ function greet(name: string): string {
 }`;
 
 const ASTViewer: Component = () => {
-	const [code, setCode] = createSignal(DEFAULT_CODE);
+	// TODO: Add file persistence and recent files list
+	const [files, setFiles] = createSignal<FileTab[]>([
+		{ id: "1", title: "example.ts", content: DEFAULT_CODE, active: true }
+	]);
 	const [ast, setAst] = createSignal<ASTNode | null>(null);
+	const [logs, setLogs] = createSignal<Log[]>([]);
 
-	const editor = useEditor({
-		extensions: [
-			CustomDoc,
-			CustomText,
-			CustomParagraph,
-		],
-		content: DEFAULT_CODE,
-		editable: true,
-		onUpdate: ({ editor }) => {
-			const newCode = editor.getText();
-			console.log("Editor content updated:", newCode);
-			setCode(newCode);
-			parseCode(newCode);
-		}
-	});
+	// TODO: Add log filtering and search functionality
+	const addLog = (log: Omit<Log, "timestamp">) => {
+		setLogs(prev => [...prev, { ...log, timestamp: new Date() }]);
+	};
 
+	// TODO: Add support for different parser configurations
 	const parseCode = (input: string) => {
 		try {
-			console.log("Starting parse of code:", input);
-			console.log("Parser options:", {
-				range: true,
-				loc: true,
-				tokens: true,
-				comment: true,
-				jsx: true,
+			addLog({
+				type: "info",
+				message: "Starting parse of code",
+				details: {
+					options: {
+						range: true,
+						loc: true,
+						tokens: true,
+						comment: true,
+						jsx: true,
+					}
+				}
 			});
 			
 			const newAst = parse(input, {
@@ -90,20 +71,64 @@ const ASTViewer: Component = () => {
 				jsx: true,
 			});
 			
-			console.log("Parse successful!");
-			console.log("AST root type:", newAst.type);
-			console.log("AST body length:", newAst.body?.length);
-			console.log("Full AST:", JSON.stringify(newAst, null, 2));
+			addLog({
+				type: "success",
+				message: "Parse successful",
+				details: {
+					rootType: newAst.type,
+					bodyLength: newAst.body?.length
+				}
+			});
+
+			showToast({
+				title: "Parse successful",
+				description: `AST generated with ${newAst.body?.length || 0} nodes`,
+				variant: "success",
+			});
 			
 			setAst(newAst);
 		} catch (error: unknown) {
 			const err = error as Error;
-			console.error("Parse error details:", {
-				name: err.name,
-				message: err.message,
-				stack: err.stack
+			addLog({
+				type: "error",
+				message: "Parse failed",
+				details: {
+					name: err.name,
+					message: err.message,
+					stack: err.stack
+				}
 			});
+
+			showToast({
+				title: "Parse failed",
+				description: err.message,
+				variant: "destructive",
+			});
+
 			setAst(null);
+		}
+	};
+
+	// TODO: Add autosave functionality
+	const handleEditorChange = (value: string) => {
+		const activeFile = files().find(f => f.active);
+		if (activeFile) {
+			setFiles(prev => prev.map(f => 
+				f.id === activeFile.id ? { ...f, content: value } : f
+			));
+			parseCode(value);
+		}
+	};
+
+	// TODO: Add file import/export functionality
+	const handleTabChange = (tabId: string) => {
+		setFiles(prev => prev.map(f => ({
+			...f,
+			active: f.id === tabId
+		})));
+		const newActiveFile = files().find(f => f.id === tabId);
+		if (newActiveFile) {
+			parseCode(newActiveFile.content);
 		}
 	};
 
@@ -111,79 +136,52 @@ const ASTViewer: Component = () => {
 	parseCode(DEFAULT_CODE);
 
 	return (
-		<div style={{
-			display: "grid",
-			"grid-template-columns": "1fr 1fr 1fr",
-			gap: "1rem",
-			padding: "1rem",
-			height: "100vh",
-			"background-color": "#1e1e1e",
-		}}>
-			{/* Rich Text Editor */}
-			<div style={{
-				padding: "1rem",
-				"background-color": "#2d2d2d",
-				"border-radius": "4px",
-			}}>
-				<h3 style={{ color: "white", "margin-bottom": "1rem" }}>Rich Text Editor</h3>
-				<Show when={editor()} fallback={<div style={{ color: "white" }}>Loading editor...</div>}>
-					<div style={{
-						"background-color": "#1e1e1e",
-						"border-radius": "4px",
-						padding: "1rem",
-						height: "calc(100% - 4rem)",
-					}}>
-						<SolidEditorContent editor={editor()!} />
-					</div>
-				</Show>
-			</div>
-
-			{/* Raw Code View */}
-			<div style={{
-				padding: "1rem",
-				"background-color": "#2d2d2d",
-				"border-radius": "4px",
-			}}>
-				<h3 style={{ color: "white", "margin-bottom": "1rem" }}>Raw Code</h3>
-				<textarea
-					value={code()}
-					onInput={(e) => {
-						const target = e.target as HTMLTextAreaElement;
-						setCode(target.value);
-						parseCode(target.value);
-						editor()?.commands.setContent(target.value);
-					}}
-					style={{
-						width: "100%",
-						height: "calc(100% - 4rem)",
-						"background-color": "#1e1e1e",
-						color: "white",
-						border: "none",
-						outline: "none",
-						"font-family": "monospace",
-						"font-size": "14px",
-						resize: "none",
-						padding: "1rem",
-						"border-radius": "4px",
-					}}
-					spellcheck={false}
+		<div class="h-screen bg-[#1e1e1e] relative overflow-hidden">
+			{/* TODO: Add file management buttons (new, open, save) */}
+			<div class="h-12 bg-[#2d2d2d] border-b border-gray-700">
+				<Tabs
+					initialTabs={files()}
+					onTabChange={handleTabChange}
 				/>
 			</div>
 
-			{/* AST View */}
-			<div style={{
-				padding: "1rem",
-				"background-color": "#2d2d2d",
-				"border-radius": "4px",
-			}}>
-				<h3 style={{ color: "white", "margin-bottom": "1rem" }}>AST Visualization</h3>
-				<div style={{
-					height: "calc(100% - 4rem)",
-					"background-color": "#1e1e1e",
-					"border-radius": "4px",
-					overflow: "auto",
-				}}>
-					<Show when={ast()} fallback={<div style={{ color: "white", padding: "1rem" }}>No AST available</div>}>
+			{/* Main Content */}
+			<div class="h-[calc(100vh-48px)] relative">
+				{/* TODO: Add log level filtering and search */}
+				<CollapsiblePanel
+					title="Logs"
+					side="left"
+					defaultWidth={400}
+					defaultCollapsed={true}
+				>
+					<LogViewer logs={logs()} />
+				</CollapsiblePanel>
+
+				{/* TODO: Add editor settings panel */}
+				<CollapsiblePanel
+					title="Code Editor"
+					side="right"
+					defaultWidth={500}
+					defaultCollapsed={false}
+				>
+					<MonacoEditorClient
+						value={files().find(f => f.active)?.content}
+						onChange={handleEditorChange}
+						fallback={
+							<div class="h-full flex items-center justify-center bg-[#1e1e1e]">
+								<LoadingSpinner size="lg" class="text-white/60" />
+							</div>
+						}
+					/>
+				</CollapsiblePanel>
+
+				{/* TODO: Add AST visualization controls (zoom, pan, layout) */}
+				<div class="h-full w-full bg-[#1e1e1e] overflow-hidden">
+					<Show when={ast()} fallback={
+						<div class="flex items-center justify-center h-full text-white">
+							<LoadingSpinner size="md" class="text-white/60" />
+						</div>
+					}>
 						<ASTFlow ast={ast()!} onNodeSelect={() => {}} />
 					</Show>
 				</div>
